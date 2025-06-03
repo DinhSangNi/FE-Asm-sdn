@@ -18,7 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Button } from './button';
 import { useState } from 'react';
 
 export type TMeta = {
@@ -37,14 +36,6 @@ export function DataTable<TData, TValue>({
   data,
   meta,
 }: DataTableProps<TData, TValue>) {
-  const [priceFilter, setPriceFilter] = useState<string>('');
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
-    {
-      id: 'price',
-      value: priceFilter,
-    },
-  ]);
-
   const table = useReactTable({
     data,
     columns,
@@ -52,40 +43,10 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    state: {
-      columnFilters,
-    },
   });
 
   return (
     <>
-      {/* <div className="flex items-center justify-between py-4">
-        <Input
-          placeholder="Search name..."
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
-          onChange={(event) =>
-            table.getColumn('name')?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
-        <Select
-          value={priceFilter}
-          onValueChange={(value: string) => {
-            setPriceFilter(value);
-            table.getColumn('price')?.setFilterValue(value);
-          }}
-        >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filter by price" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="under500">Under 500.000</SelectItem>
-            <SelectItem value="500to1m">500.000 - 1.000.000</SelectItem>
-            <SelectItem value="above1m">Above 1.000.000</SelectItem>
-          </SelectContent>
-        </Select>
-      </div> */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>

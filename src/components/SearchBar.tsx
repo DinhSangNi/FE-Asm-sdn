@@ -7,9 +7,7 @@ import { productsService } from '@/lib/api/products';
 import { PaginationProductsResponse, Product } from '@/store/types';
 import { useRouter } from 'next/navigation';
 
-type Props = {};
-
-const SearchBar = (props: Props) => {
+const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [searchedList, setSearchedList] = useState<Product[]>([]);
   const [searched, setSearched] = useState<boolean>(false);

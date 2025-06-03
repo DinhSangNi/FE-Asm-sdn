@@ -1,4 +1,4 @@
-// 'use client';
+'use client';
 
 import UserIcon from '../../public/icons/UserIcon';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,7 @@ import {
 import { List, Search } from 'lucide-react';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
+import { Suspense } from 'react';
 
 type Props = {};
 
@@ -24,7 +25,9 @@ const Navigation = (props: Props) => {
             Assignment 1
           </Link>
           <div className="flex-2">
-            <SearchBar />
+            <Suspense fallback={<p>Loading search...</p>}>
+              <SearchBar />
+            </Suspense>
           </div>
           <div>
             <Link

@@ -3,16 +3,9 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
-import { Plus } from 'lucide-react';
-import CreateProductForm, {
-  createProductFormSchema,
-} from './CreateProductForm';
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { productsService } from '@/lib/api/products';

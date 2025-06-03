@@ -2,7 +2,6 @@
 
 import { Product } from '@/store/types';
 import { ColumnDef } from '@tanstack/react-table';
-import ProductDetailsDialog from '@/components/ProductDetailsDialog';
 import { FilePenLine, X } from 'lucide-react';
 import { TMeta } from '@/components/ui/data-table';
 

@@ -8,7 +8,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { useState } from 'react';
-import { CircleX, X } from 'lucide-react';
+import { CircleX } from 'lucide-react';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import ProductUpdateDialog from './ProductUpdateDialog';
 
@@ -27,7 +27,7 @@ const ProductsList = ({ data }: Props) => {
       router.refresh();
       setOpen(false);
     },
-    onError: (error: any) => {
+    onError: (error) => {
       console.log('error: ', error);
     },
   });

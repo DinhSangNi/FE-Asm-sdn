@@ -15,12 +15,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { productsService } from '@/lib/api/products';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { useRouter } from 'next/navigation';
 import { Product } from '@/store/types';
+import Image from 'next/image';
 
 type Props = {
-  mutate: (values: any) => void;
+  mutate: (value: z.infer<typeof updateProductFormSchema>) => void;
   id: string;
 };
 
@@ -99,8 +98,6 @@ export default function UpdateProductForm({ mutate, id }: Props) {
   useEffect(() => {
     fetchProductDetails();
   }, []);
-
-  console.log('product: ', product);
 
   return (
     <Form {...form}>
@@ -183,7 +180,9 @@ export default function UpdateProductForm({ mutate, id }: Props) {
         {previewImage.length > 0 && (
           <div className="flex gap-2">
             {previewImage.map((prev) => (
-              <img
+              <Image
+                width={500}
+                height={500}
                 key={prev}
                 className="h-20 w-20 rounded-lg"
                 src={prev}
