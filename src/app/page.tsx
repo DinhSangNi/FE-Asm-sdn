@@ -1,103 +1,181 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import Pagination from '@/components/Pagination';
+import ProductCard from '@/components/ProductCard';
+import { productsService } from '@/lib/api/products';
+import { PaginationProductsResponse, Product } from '@/store/types';
+import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useEffect, useState } from 'react';
+
+export type QueryProducts = {
+  page: number;
+  pageSize: number;
+};
+
+export enum PriceFilter {
+  ALL = 'all',
+  UNDER1M = 'under1m',
+  FROM1MTO5M = 'from1mto5m',
+  ABOVE5M = 'above5m',
+}
+
+export default function HomePage() {
+  const [priceFilter, setPriceFilter] = useState(PriceFilter.ALL);
+
+  const router = useRouter();
+  const pathName = usePathname();
+  const searchParams = useSearchParams();
+
+  const page = searchParams.get('page')
+    ? parseInt(searchParams.get('page') as string)
+    : 1;
+  const pageSize = searchParams.get('pageSize')
+    ? parseInt(searchParams.get('pageSize') as string)
+    : 2;
+
+  const minPrice = searchParams.get('minPrice')
+    ? parseFloat(searchParams.get('minPrice') as string)
+    : undefined;
+  const maxPrice = searchParams.get('maxPrice')
+    ? parseFloat(searchParams.get('maxPrice') as string)
+    : undefined;
+
+  const { data, isError } = useQuery({
+    queryKey: ['products', `${page}`, minPrice, maxPrice],
+    queryFn: () => {
+      return productsService.getProducts({
+        page: page,
+        pageSize: pageSize,
+        minPrice,
+        maxPrice,
+      });
+    },
+  });
+
+  const response: PaginationProductsResponse = data?.data;
+  const products: Product[] = response?.metadata.data;
+
+  const query = Object.fromEntries(searchParams.entries());
+
+  if (page !== undefined) {
+    query.page = page.toString();
+  }
+
+  if (pageSize !== undefined) {
+    query.pageSize = pageSize.toString();
+  }
+
+  if (minPrice !== undefined) {
+    query.minPrice = minPrice.toString();
+  }
+
+  if (maxPrice !== undefined) {
+    query.maxPrice = maxPrice.toString();
+  }
+
+  console.log('query: ', query);
+
+  const handleNext = () => {
+    query.page = (Number(query.page) + 1).toString();
+    const url = Object.entries(query)
+      .map(([Key, value]) => `${Key}=${value}`)
+      .join('&');
+    router.push(`/?${url}`);
+  };
+
+  const handlePrevious = () => {
+    query.page = (Number(query.page) - 1).toString();
+    const url = Object.entries(query)
+      .map(([Key, value]) => `${Key}=${value}`)
+      .join('&');
+    router.push(`/?${url}`);
+  };
+
+  const handlePriceFilterChange = (value: PriceFilter) => {
+    if (value === PriceFilter.UNDER1M) {
+      router.push(
+        `/?page=${page}&pageSize=${pageSize}&minPrice=0&maxPrice=${1000000}`
+      );
+    } else if (value === PriceFilter.FROM1MTO5M) {
+      router.push(
+        `/?page=${page}&pageSize=${pageSize}&minPrice=${1000000}&maxPrice=${5000000}`
+      );
+    } else if (value === PriceFilter.ABOVE5M) {
+      router.push(`/?page=${page}&pageSize=${pageSize}&minPrice=${5000000}`);
+    } else {
+      router.push(`/?page=${page}&pageSize=${pageSize}`);
+    }
+
+    setPriceFilter(value);
+  };
+
+  useEffect(() => {
+    if (minPrice === undefined && maxPrice === undefined) {
+      setPriceFilter(PriceFilter.ALL);
+    } else if (minPrice === 0 && maxPrice === 1000000) {
+      setPriceFilter(PriceFilter.UNDER1M);
+    } else if (minPrice === 1000000 && maxPrice === 5000000) {
+      setPriceFilter(PriceFilter.FROM1MTO5M);
+    } else if (minPrice === 5000000 && maxPrice === undefined) {
+      setPriceFilter(PriceFilter.ABOVE5M);
+    }
+  }, [minPrice, maxPrice]);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <>
+      <div className="h-full w-full">
+        <div className="mx-auto mt-10 w-[90%]">
+          <Select value={priceFilter} onValueChange={handlePriceFilterChange}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter by price" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={PriceFilter.ALL}>All</SelectItem>
+              <SelectItem value={PriceFilter.UNDER1M}>
+                Under 1.000.000
+              </SelectItem>
+              <SelectItem value={PriceFilter.FROM1MTO5M}>
+                1.000.000 - 5.000.000
+              </SelectItem>
+              <SelectItem value={PriceFilter.ABOVE5M}>
+                Above 5.000.000
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        {!isError && (
+          <>
+            <div className="mx-auto mt-6 grid w-[90%] grid-cols-2 gap-8 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
+              {products?.map((pro: Product) => {
+                return (
+                  <Link href={`/products/${pro._id}`} key={pro._id}>
+                    <ProductCard data={pro} />
+                  </Link>
+                );
+              })}
+            </div>
+            <div className="mx-auto mt-4 flex w-[90%] justify-center">
+              <Pagination
+                total={response?.metadata.total}
+                page={page}
+                pageSize={pageSize}
+                totalPages={response?.metadata.totalPages}
+                onNext={handleNext}
+                onPrevious={handlePrevious}
+              />
+            </div>
+          </>
+        )}
+      </div>
+    </>
   );
 }
