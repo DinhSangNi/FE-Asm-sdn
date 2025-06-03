@@ -10,8 +10,6 @@ const ProductDetails = () => {
   const params = useParams();
   const slug = params.slug;
 
-  console.log('slug: ', slug);
-
   const { data } = useQuery({
     queryKey: ['products', slug],
     queryFn: () => {
