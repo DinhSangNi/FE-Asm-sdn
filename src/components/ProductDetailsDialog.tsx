@@ -10,11 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Eye } from 'lucide-react';
 
-type Props = {
-  id: string;
-};
-
-const ProductDetailsDialog = (props: Props) => {
+const ProductDetailsDialog = () => {
   return (
     <>
       <Dialog>

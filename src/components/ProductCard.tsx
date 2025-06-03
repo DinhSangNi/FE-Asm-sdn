@@ -1,7 +1,6 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -30,9 +29,6 @@ const ProductCard = ({ data }: Props) => {
         </CardHeader>
         <CardContent className="text-center">
           <CardTitle>{data.name}</CardTitle>
-          {/* <CardDescription className="line-clamp-2">
-            {data.description}
-          </CardDescription> */}
         </CardContent>
         <CardFooter>
           <div className="w-full text-center">

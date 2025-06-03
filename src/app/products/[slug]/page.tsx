@@ -6,9 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 
-type Props = {};
-
-const ProductDetails = (props: Props) => {
+const ProductDetails = () => {
   const params = useParams();
   const slug = params.slug;
 
@@ -37,7 +35,6 @@ const ProductDetails = (props: Props) => {
                 width={800}
                 height={800}
                 src={data?.data.metadata.image[0]}
-                // src="https://product.hstatic.net/1000197303/product/pro_den_1_d1f605bcbacb44a6a690a8530618ecbc_master.jpg"
                 alt={`product's image`}
                 className="h-auto w-full object-cover"
               />

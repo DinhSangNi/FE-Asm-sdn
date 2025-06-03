@@ -18,7 +18,7 @@ import Spinner from './Spinner';
 import { useRouter } from 'next/navigation';
 
 type Props = {
-  mutate: (values: any) => void;
+  mutate: (values: z.infer<typeof createProductFormSchema>) => void;
   loading: boolean;
   isSuccess: boolean;
 };

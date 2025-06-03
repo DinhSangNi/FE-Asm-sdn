@@ -1,7 +1,6 @@
 'use client';
 
 import UserIcon from '../../public/icons/UserIcon';
-import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,14 +8,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { List, Search } from 'lucide-react';
+import { List } from 'lucide-react';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
 import { Suspense } from 'react';
 
-type Props = {};
-
-const Navigation = (props: Props) => {
+const Navigation = () => {
   return (
     <>
       <div className="fixed z-50 flex h-[64px] w-full justify-center bg-white py-4 opacity-90 shadow-md">

@@ -1,6 +1,6 @@
 'use client';
 
-import { PaginationProductsResponse, Product } from '@/store/types';
+import { Product } from '@/store/types';
 import ProductDialog from '@/components/ProductDialog';
 import ProductsList from '@/components/ProductsList';
 import { useEffect, useState } from 'react';

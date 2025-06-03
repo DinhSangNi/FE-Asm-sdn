@@ -1,5 +1,4 @@
-import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 type Props = {
   page: number;
@@ -10,14 +9,7 @@ type Props = {
   onPrevious?: () => void;
 };
 
-const Pagination = ({
-  page,
-  pageSize,
-  total,
-  totalPages,
-  onNext,
-  onPrevious,
-}: Props) => {
+const Pagination = ({ page, total, totalPages, onNext, onPrevious }: Props) => {
   return (
     <>
       <div className="flex w-fit items-center">
