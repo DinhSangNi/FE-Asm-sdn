@@ -6,7 +6,7 @@ import { Providers } from './provider';
 import { ToastProvider } from './ToastProvider';
 import { ReduxProvider } from './ReduxProvider';
 import { getServerSession } from 'next-auth';
-import { authOptions } from './api/auth/[...nextauth]/route';
+import { authOptions } from '@/utils/authOptions';
 import { StoreState } from '@/store/store';
 import { AppProvider } from './AppProvider';
 
