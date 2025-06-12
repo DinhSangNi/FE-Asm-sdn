@@ -191,7 +191,9 @@ export default function UpdateProductForm({ mutate, id }: Props) {
             ))}
           </div>
         )}
-        <Button type="submit">Submit</Button>
+        <Button className="cursor-pointer" type="submit">
+          Submit
+        </Button>
       </form>
     </Form>
   );

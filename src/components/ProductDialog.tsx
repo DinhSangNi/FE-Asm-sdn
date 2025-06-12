@@ -3,7 +3,6 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -23,9 +22,7 @@ export enum ProductDialogEnum {
   CREATE = 'create',
 }
 
-type Props = {};
-
-const ProductDialog = ({}: Props) => {
+const ProductDialog = () => {
   const [open, setOpen] = useState<boolean>(false);
   const router = useRouter();
   const mutation = useMutation({

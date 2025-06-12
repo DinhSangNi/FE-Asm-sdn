@@ -6,7 +6,7 @@ import { productsService } from '@/lib/api/products';
 import { PaginationProductsResponse, Product } from '@/store/types';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Select,
   SelectContent,
@@ -15,11 +15,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useEffect, useState } from 'react';
-
-type QueryProducts = {
-  page: number;
-  pageSize: number;
-};
 
 enum PriceFilter {
   ALL = 'all',
@@ -32,7 +27,6 @@ export default function HomePageClient() {
   const [priceFilter, setPriceFilter] = useState(PriceFilter.ALL);
 
   const router = useRouter();
-  const pathName = usePathname();
   const searchParams = useSearchParams();
 
   const page = searchParams.get('page')
@@ -81,8 +75,6 @@ export default function HomePageClient() {
   if (maxPrice !== undefined) {
     query.maxPrice = maxPrice.toString();
   }
-
-  console.log('query: ', query);
 
   const handleNext = () => {
     query.page = (Number(query.page) + 1).toString();
@@ -157,7 +149,11 @@ export default function HomePageClient() {
             <div className="mx-auto mt-6 grid w-[90%] grid-cols-2 gap-8 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
               {products?.map((pro: Product) => {
                 return (
-                  <Link href={`/products/${pro._id}`} key={pro._id}>
+                  <Link
+                    className="p-0"
+                    href={`/products/${pro._id}`}
+                    key={pro._id}
+                  >
                     <ProductCard data={pro} />
                   </Link>
                 );

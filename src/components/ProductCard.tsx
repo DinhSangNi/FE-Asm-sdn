@@ -15,7 +15,7 @@ type Props = {
 const ProductCard = ({ data }: Props) => {
   return (
     <>
-      <Card className="min-h-[410px] cursor-pointer justify-between rounded-none pt-0 shadow-xl transition-all duration-200 hover:border-black lg:h-auto">
+      <Card className="cursor-pointer justify-between rounded-none pt-0 shadow-xl transition-all duration-200 hover:border-black lg:h-auto">
         <CardHeader className="p-0">
           <div className="">
             <Image
@@ -32,7 +32,7 @@ const ProductCard = ({ data }: Props) => {
         </CardContent>
         <CardFooter>
           <div className="w-full text-center">
-            <p className="mb-2 text-[0.9rem] text-red-400">{`${data.price.toLocaleString('vi-VN')} VND`}</p>
+            <p className="text-[0.9rem] text-red-400">{`${data.price.toLocaleString('vi-VN')} VND`}</p>
           </div>
         </CardFooter>
       </Card>

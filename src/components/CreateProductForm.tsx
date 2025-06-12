@@ -171,7 +171,7 @@ export default function CreateProductForm({
             ))}
           </div>
         )}
-        <Button disabled={loading} type="submit">
+        <Button disabled={loading} type="submit" className="cursor-pointer">
           Submit {loading && <Spinner />}
         </Button>
       </form>

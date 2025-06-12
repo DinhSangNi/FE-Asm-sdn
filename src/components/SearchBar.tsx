@@ -47,8 +47,6 @@ const SearchBar = () => {
     return () => clearTimeout(debounce);
   }, [searchQuery]);
 
-  console.log('searchQuery: ', searchQuery);
-
   return (
     <>
       <div className="relative">

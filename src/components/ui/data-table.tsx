@@ -2,7 +2,6 @@
 
 import {
   ColumnDef,
-  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -18,7 +17,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useState } from 'react';
 
 export type TMeta = {
   onDelete: (id: string) => void;
