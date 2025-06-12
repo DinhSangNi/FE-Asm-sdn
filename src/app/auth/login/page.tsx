@@ -79,7 +79,7 @@ const LoginPage = () => {
         router.push('/');
       }
     } catch (error) {
-      toast.error(error.response.data!.message, {
+      toast.error('Register failed!', {
         position: 'top-center',
       });
     } finally {
