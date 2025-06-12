@@ -146,6 +146,7 @@ export default function CreateProductForm({
                   accept="image/*"
                   multiple
                   onChange={(e) => {
+                    console.log(value);
                     const files = Array.from(e.target.files || []);
                     if (files.length > 0) {
                       onChange(files);

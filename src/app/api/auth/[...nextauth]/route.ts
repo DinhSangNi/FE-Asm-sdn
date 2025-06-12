@@ -2,8 +2,6 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import type { JWT } from 'next-auth/jwt';
 import type { AuthOptions, Session, User } from 'next-auth';
-import { AuthService } from '@/lib/api/auth';
-import { headers } from 'next/headers';
 
 export const authOptions: AuthOptions = {
   providers: [
