@@ -1,5 +1,6 @@
-import NextAuth from 'next-auth';
+import type { NextAuthOptions } from 'next-auth';
 
+type _FixEslintTypeUsage = NextAuthOptions;
 declare module 'next-auth' {
   interface User {
     id: string;
