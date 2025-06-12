@@ -23,7 +23,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/store/store';
 import { login } from '@/store/userSlice';
 
-export const LoginFormSchema = z.object({
+const LoginFormSchema = z.object({
   email: z.string().email({ message: 'Invalid email!' }).min(1, {
     message: 'Please input your email!',
   }),

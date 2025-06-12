@@ -24,7 +24,7 @@ import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { z } from 'zod';
 
-export const registerFormSchema = z.object({
+const registerFormSchema = z.object({
   fullname: z.string().min(1, { message: 'Please input your fullname' }),
   email: z.string().email({ message: 'Invalid email!' }).min(1, {
     message: 'Please input your email!',
