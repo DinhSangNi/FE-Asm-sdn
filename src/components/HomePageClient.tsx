@@ -15,6 +15,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useEffect, useState } from 'react';
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 enum PriceFilter {
   ALL = 'all',
@@ -43,7 +45,7 @@ export default function HomePageClient() {
     ? parseFloat(searchParams.get('maxPrice') as string)
     : undefined;
 
-  const { data, isError } = useQuery({
+  const { data, isError, isLoading } = useQuery({
     queryKey: ['products', `${page}`, minPrice, maxPrice],
     queryFn: () => {
       return productsService.getProducts({
@@ -146,29 +148,37 @@ export default function HomePageClient() {
         </div>
         {!isError && (
           <>
-            <div className="mx-auto mt-6 grid w-[90%] grid-cols-2 gap-8 md:grid-cols-3 md:gap-4 lg:grid-cols-5">
-              {products?.map((pro: Product) => {
-                return (
-                  <Link
-                    className="p-0"
-                    href={`/products/${pro._id}`}
-                    key={pro._id}
-                  >
-                    <ProductCard data={pro} />
-                  </Link>
-                );
-              })}
-            </div>
-            <div className="mx-auto mt-4 flex w-[90%] justify-center">
-              <Pagination
-                total={response?.metadata.total}
-                page={page}
-                pageSize={pageSize}
-                totalPages={response?.metadata.totalPages}
-                onNext={handleNext}
-                onPrevious={handlePrevious}
-              />
-            </div>
+            {!isLoading ? (
+              <>
+                <div className="mx-auto mt-6 grid w-[90%] grid-cols-2 gap-8 md:grid-cols-3 md:gap-4 lg:grid-cols-5">
+                  {products?.map((pro: Product) => {
+                    return (
+                      <Link
+                        className="p-0"
+                        href={`/products/${pro._id}`}
+                        key={pro._id}
+                      >
+                        <ProductCard data={pro} />
+                      </Link>
+                    );
+                  })}
+                </div>
+                <div className="mx-auto mt-4 flex w-[90%] justify-center">
+                  <Pagination
+                    total={response?.metadata.total}
+                    page={page}
+                    pageSize={pageSize}
+                    totalPages={response?.metadata.totalPages}
+                    onNext={handleNext}
+                    onPrevious={handlePrevious}
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="mx-auto mt-6 flex h-full w-[70%] items-center justify-center">
+                <Spin indicator={<LoadingOutlined spin />} size="large" />
+              </div>
+            )}
           </>
         )}
       </div>

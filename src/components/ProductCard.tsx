@@ -19,16 +19,16 @@ const ProductCard = ({ data }: Props) => {
         <CardHeader className="p-0">
           <div className="">
             <Image
-              width={300}
-              height={500}
+              width={480}
+              height={480}
               src={data.image[0]}
               alt={`product's image`}
-              className="h-[310px] w-full object-cover"
+              className="h-[330px] w-full object-cover"
             />
           </div>
         </CardHeader>
         <CardContent className="text-center">
-          <CardTitle>{data.name}</CardTitle>
+          <CardTitle className="line-clamp-1">{data.name}</CardTitle>
         </CardContent>
         <CardFooter>
           <div className="w-full text-center">

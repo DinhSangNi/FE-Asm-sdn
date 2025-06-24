@@ -8,6 +8,7 @@ import { AppDispatch } from '@/store/store';
 import { removeFromCart } from '@/store/cartSlice';
 import { isInteger } from '@/utils/numberUtils';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 type Props = {
   data: {
@@ -86,13 +87,13 @@ const CartItem = ({ data, checked, onSelect }: Props) => {
 
   const handleIncrease = async () => {
     setQuantity((prev) => prev + 1);
-    addMutation.mutateAsync();
+    await addMutation.mutateAsync();
   };
 
   const handleDecrease = async () => {
     if (quantity === 1) return;
     setQuantity((prev) => prev - 1);
-    removeMutation.mutateAsync();
+    await removeMutation.mutateAsync();
   };
 
   const handleQuantityChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -112,8 +113,11 @@ const CartItem = ({ data, checked, onSelect }: Props) => {
   const handleOnBlur = async () => {
     await updateMutation.mutateAsync();
   };
-  const handleDelete = () => {
-    deleteMutation.mutateAsync();
+  const handleDelete = async () => {
+    await deleteMutation.mutateAsync();
+    toast.success('Delete successfully', {
+      position: 'top-center',
+    });
   };
 
   return (

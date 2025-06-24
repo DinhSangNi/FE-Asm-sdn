@@ -5,6 +5,8 @@ import { Order as OrderType } from '@/types/type';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import React from 'react';
 import toast from 'react-hot-toast';
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const Order = () => {
   const queryClient = useQueryClient();
@@ -18,7 +20,7 @@ const Order = () => {
 
   const updateStatusOrderMutation = useMutation({
     mutationFn: async (payload: { orderId: string; status: string }) => {
-      orderServices.updateStatusOrder(payload);
+      await orderServices.updateStatusOrder(payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -67,11 +69,23 @@ const Order = () => {
                               Buy again
                             </button>
                             <button
-                              disabled={order.status === 'paid'}
-                              className={`cursor-pointer bg-orange-600 px-4 py-2 !text-white ${order.status === 'paid' ? '!cursor-not-allowed opacity-60' : 'hover:opacity-80'} `}
+                              disabled={
+                                order.status === 'paid' ||
+                                updateStatusOrderMutation.isPending
+                              }
+                              className={`flex cursor-pointer items-center justify-center bg-orange-600 px-4 py-2 !text-white ${order.status === 'paid' || updateStatusOrderMutation.isPending ? '!cursor-not-allowed opacity-60' : 'hover:opacity-80'} `}
                               onClick={() => handlePayNow(order._id, 'paid')}
                             >
-                              Pay Now
+                              <p className="!m-0">Pay Now</p>
+                              {updateStatusOrderMutation.isPending && (
+                                <span>
+                                  <Spin
+                                    className="!text-white"
+                                    indicator={<LoadingOutlined spin />}
+                                    size="default"
+                                  />
+                                </span>
+                              )}
                             </button>
                           </div>
                         </div>

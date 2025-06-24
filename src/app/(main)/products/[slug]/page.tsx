@@ -9,7 +9,7 @@ import { Product } from '@/store/types';
 import { isInteger } from '@/utils/numberUtils';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { ChangeEvent, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
@@ -18,6 +18,7 @@ const ProductDetails = () => {
   const params = useParams();
   const slug = params.slug;
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { data } = useQuery({
     queryKey: ['products', slug],
@@ -54,7 +55,7 @@ const ProductDetails = () => {
 
   const handleAddToCart = async () => {
     if (!product) return;
-    addMutation.mutateAsync();
+    await addMutation.mutateAsync();
     dispatch(
       addToCart({
         id: product._id,
@@ -105,7 +106,7 @@ const ProductDetails = () => {
                 {product?.description}
               </p>
             </div>
-            <div className="mb-4 flex gap-4">
+            <div className="mb-8 flex gap-4">
               <button className="h-[35px] w-[35px] cursor-pointer border-[1px] border-black text-center hover:border-none hover:bg-red-300">
                 S
               </button>
@@ -126,7 +127,7 @@ const ProductDetails = () => {
                 onDecrease={handleDecrease}
                 onChange={handleOnChangeQuantity}
               />
-              <p className="mb-4 text-[1.4rem] font-bold">
+              <p className="!my-8 text-[1.4rem] font-bold">
                 {product?.price.toLocaleString('vi-VN') + ' ₫'}
               </p>
               <div className="flex">
@@ -136,7 +137,13 @@ const ProductDetails = () => {
                 >
                   Add to cart
                 </button>
-                <button className="w-full cursor-pointer bg-red-500 px-6 py-2 font-bold text-white hover:bg-red-700">
+                <button
+                  className="w-full cursor-pointer bg-red-500 px-6 py-2 font-bold !text-white hover:bg-red-700"
+                  onClick={async () => {
+                    await handleAddToCart();
+                    router.push('/cart');
+                  }}
+                >
                   Buy Now
                 </button>
               </div>

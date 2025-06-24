@@ -11,9 +11,11 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
+import { Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 const Cart = () => {
-  const { data: cartRes, isSuccess } = useCart();
+  const { data: cartRes, isSuccess, isLoading } = useCart();
   const [selectItems, setSelectedItems] = useState<string[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const router = useRouter();
@@ -134,43 +136,49 @@ const Cart = () => {
       <div className="min-h-screen w-full bg-gray-100">
         <div className="mx-auto w-[80%] pt-10 lg:w-[70%]">
           <h1 className="text-[1.3rem] !font-bold">Cart</h1>
-          <div>
-            {cartRes?.metadata?.items.length === 0 ? (
-              <p className="text-center text-gray-500">Empty Cart</p>
-            ) : (
-              <div>
-                {cartRes?.metadata?.items.map(
-                  (item: {
-                    _id: string;
-                    productId: {
+          {!isLoading && isSuccess ? (
+            <div>
+              {cartRes?.metadata?.items.length === 0 ? (
+                <p className="text-center text-gray-500">Empty Cart</p>
+              ) : (
+                <div>
+                  {cartRes?.metadata?.items.map(
+                    (item: {
                       _id: string;
-                      name: string;
-                      price: string;
-                      image: string[];
-                    };
-                    quantity: number;
-                  }) => {
-                    const resolvedItem = {
-                      id: item.productId._id,
-                      name: item.productId.name,
-                      price: item.productId.price,
-                      image: item.productId.image[0],
-                      quantity: item.quantity,
-                    };
-                    return (
-                      <div key={item._id}>
-                        <CartItem
-                          data={resolvedItem}
-                          checked={selectItems.includes(resolvedItem.id)}
-                          onSelect={handleSelect}
-                        />
-                      </div>
-                    );
-                  }
-                )}
-              </div>
-            )}
-          </div>
+                      productId: {
+                        _id: string;
+                        name: string;
+                        price: string;
+                        image: string[];
+                      };
+                      quantity: number;
+                    }) => {
+                      const resolvedItem = {
+                        id: item.productId._id,
+                        name: item.productId.name,
+                        price: item.productId.price,
+                        image: item.productId.image[0],
+                        quantity: item.quantity,
+                      };
+                      return (
+                        <div key={item._id}>
+                          <CartItem
+                            data={resolvedItem}
+                            checked={selectItems.includes(resolvedItem.id)}
+                            onSelect={handleSelect}
+                          />
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="mx-auto mt-6 flex h-full w-[70%] items-center justify-center">
+              <Spin indicator={<LoadingOutlined spin />} size="large" />
+            </div>
+          )}
           {cartRes?.metadata?.items.length !== 0 && (
             <div className="sticky bottom-0 z-10 mt-6 flex w-full items-center justify-between bg-white p-6 shadow-2xl">
               <div className="flex items-center gap-6">
@@ -194,10 +202,23 @@ const Cart = () => {
                   </span>
                 </div>
                 <button
-                  className="cursor-pointer bg-orange-600 px-6 py-2 !text-white hover:opacity-80"
+                  disabled={
+                    createOrderMutation.isPending || clearCartMutation.isPending
+                  }
+                  className={`flex cursor-pointer items-center justify-center gap-2 bg-orange-600 px-6 py-2 !text-white ${createOrderMutation.isPending || clearCartMutation.isPending ? 'cursor-not-allowed opacity-60' : 'hover:opacity-80'}`}
                   onClick={handleOnBuy}
                 >
-                  Buy
+                  <p className="!m-0">Buy</p>
+                  {createOrderMutation.isPending ||
+                    (clearCartMutation.isPending && (
+                      <span>
+                        <Spin
+                          className="!text-white"
+                          indicator={<LoadingOutlined spin />}
+                          size="default"
+                        />
+                      </span>
+                    ))}
                 </button>
               </div>
             </div>
