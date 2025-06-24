@@ -95,16 +95,16 @@ export default function HomePageClient() {
   const handlePriceFilterChange = (value: PriceFilter) => {
     if (value === PriceFilter.UNDER1M) {
       router.push(
-        `/?page=${page}&pageSize=${pageSize}&minPrice=0&maxPrice=${1000000}`
+        `/?page=${1}&pageSize=${pageSize}&minPrice=0&maxPrice=${1000000}`
       );
     } else if (value === PriceFilter.FROM1MTO5M) {
       router.push(
-        `/?page=${page}&pageSize=${pageSize}&minPrice=${1000000}&maxPrice=${5000000}`
+        `/?page=${1}&pageSize=${pageSize}&minPrice=${1000000}&maxPrice=${5000000}`
       );
     } else if (value === PriceFilter.ABOVE5M) {
-      router.push(`/?page=${page}&pageSize=${pageSize}&minPrice=${5000000}`);
+      router.push(`/?page=${1}&pageSize=${pageSize}&minPrice=${5000000}`);
     } else {
-      router.push(`/?page=${page}&pageSize=${pageSize}`);
+      router.push(`/?page=${1}&pageSize=${pageSize}`);
     }
 
     setPriceFilter(value);
@@ -146,7 +146,7 @@ export default function HomePageClient() {
         </div>
         {!isError && (
           <>
-            <div className="mx-auto mt-6 grid w-[90%] grid-cols-2 gap-8 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
+            <div className="mx-auto mt-6 grid w-[90%] grid-cols-2 gap-8 md:grid-cols-3 md:gap-4 lg:grid-cols-5">
               {products?.map((pro: Product) => {
                 return (
                   <Link

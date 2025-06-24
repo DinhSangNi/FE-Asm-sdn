@@ -15,7 +15,7 @@ type Props = {
 const ProductCard = ({ data }: Props) => {
   return (
     <>
-      <Card className="cursor-pointer justify-between rounded-none pt-0 shadow-xl transition-all duration-200 hover:border-black lg:h-auto">
+      <Card className="h-[450px] cursor-pointer justify-between rounded-none pt-0 shadow-xl transition-all duration-200 hover:border-black">
         <CardHeader className="p-0">
           <div className="">
             <Image
@@ -23,7 +23,7 @@ const ProductCard = ({ data }: Props) => {
               height={500}
               src={data.image[0]}
               alt={`product's image`}
-              className="h-full w-full object-cover"
+              className="h-[310px] w-full object-cover"
             />
           </div>
         </CardHeader>

@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer, { UserState } from './userSlice';
+import cartReducer from './cartSlice';
 
 export interface StoreState {
   user: UserState;
@@ -9,6 +10,7 @@ export const makeStore = (preloadedState: StoreState) =>
   configureStore({
     reducer: {
       user: userReducer,
+      cart: cartReducer,
     },
     preloadedState,
   });

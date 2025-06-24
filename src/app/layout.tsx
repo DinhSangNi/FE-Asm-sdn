@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '../styles/globals.css';
-import Navigation from '@/components/Navigation';
-import { Providers } from './provider';
-import { ToastProvider } from './ToastProvider';
-import { ReduxProvider } from './ReduxProvider';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/utils/authOptions';
 import { StoreState } from '@/store/store';
+import 'antd/dist/reset.css';
 import { AppProvider } from './AppProvider';
+import { ReduxProvider } from './ReduxProvider';
+import { Providers } from './provider';
+import { ToastProvider } from './ToastProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -43,17 +43,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} h-full w-full antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen w-full antialiased`}
       >
         <AppProvider>
           <ReduxProvider preloadedState={preloadedState}>
             <Providers>
-              {/* Header */}
-              <Navigation />
-              {/* Main */}
-              <ToastProvider>
-                <main className="h-full w-full pt-[64px]">{children}</main>
-              </ToastProvider>
+              <ToastProvider>{children}</ToastProvider>
             </Providers>
           </ReduxProvider>
         </AppProvider>

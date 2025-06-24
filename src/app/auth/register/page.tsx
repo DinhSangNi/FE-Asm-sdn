@@ -144,7 +144,7 @@ const RegisterPage = () => {
                 </FormItem>
               )}
             />
-            <Button disabled={loading} className="cursor-pointer">
+            <Button disabled={loading} className="cursor-pointer !text-white">
               Sign up {loading && <Spinner />}
             </Button>
             <p className="w-full text-center text-[0.9rem]">

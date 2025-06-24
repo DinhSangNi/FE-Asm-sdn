@@ -40,7 +40,6 @@ const ProductsPage = () => {
 
   useEffect(() => {
     if (!isError) {
-      console.log('data: ', data);
       setProducts(data?.data.metadata.data);
       setPagination({
         page: query.page,
@@ -54,7 +53,7 @@ const ProductsPage = () => {
 
   return (
     <>
-      <div className="mx-auto mt-6 w-[90%]">
+      <div className="mx-auto mt-6 h-full w-[90%]">
         <div className="mb-4 flex justify-between">
           <div>
             <h1 className="font-bold">Products Management</h1>

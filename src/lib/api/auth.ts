@@ -1,4 +1,4 @@
-import { axiosInstance } from '../config/axios';
+import { axiosInstance } from '../config/axiosInstance';
 
 export const AuthService = {
   register: async (name: string, email: string, password: string) => {

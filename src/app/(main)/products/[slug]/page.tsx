@@ -1,14 +1,23 @@
 'use client';
 
+import QuantityStepper from '@/components/QuantityStepper';
+import { CartServices } from '@/lib/api/cart';
 import { productsService } from '@/lib/api/products';
+import { addToCart } from '@/store/cartSlice';
+import { AppDispatch } from '@/store/store';
 import { Product } from '@/store/types';
-import { useQuery } from '@tanstack/react-query';
+import { isInteger } from '@/utils/numberUtils';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
+import { ChangeEvent, useState } from 'react';
+import toast from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
 
 const ProductDetails = () => {
   const params = useParams();
   const slug = params.slug;
+  const queryClient = useQueryClient();
 
   const { data } = useQuery({
     queryKey: ['products', slug],
@@ -22,6 +31,55 @@ const ProductDetails = () => {
   if (data) {
     product = data.data.metadata;
   }
+
+  const dispatch = useDispatch<AppDispatch>();
+  const [quantity, setQuantity] = useState<number>(1);
+
+  const addMutation = useMutation({
+    mutationFn: async () => {
+      CartServices.addToCart({
+        productId: product?._id as string,
+        quantity: quantity,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['cart'],
+      });
+      toast.success('Added to cart successfully ', {
+        position: 'top-center',
+      });
+    },
+  });
+
+  const handleAddToCart = async () => {
+    if (!product) return;
+    addMutation.mutateAsync();
+    dispatch(
+      addToCart({
+        id: product._id,
+        name: product.name,
+        price: product.price.toString(),
+        image: product.image[0],
+        quantity: 1,
+      })
+    );
+  };
+
+  const handleIncrease = () => {
+    setQuantity((prev) => prev + 1);
+  };
+
+  const handleDecrease = () => {
+    if (quantity === 0) return;
+    setQuantity((prev) => prev - 1);
+  };
+
+  const handleOnChangeQuantity = (e: ChangeEvent<HTMLInputElement>) => {
+    if (!isInteger(e.target.value)) return;
+    if (Number(e.target.value) < 0) return;
+    setQuantity(Number(e.target.value.trim()));
+  };
 
   return (
     <div className="mx-auto mt-6 h-full w-[90%]">
@@ -62,11 +120,20 @@ const ProductDetails = () => {
               </button>
             </div>
             <div className="w-full">
+              <QuantityStepper
+                value={quantity}
+                onIncrease={handleIncrease}
+                onDecrease={handleDecrease}
+                onChange={handleOnChangeQuantity}
+              />
               <p className="mb-4 text-[1.4rem] font-bold">
                 {product?.price.toLocaleString('vi-VN') + ' ₫'}
               </p>
               <div className="flex">
-                <button className="w-full cursor-pointer border-[1px] border-red-500 px-6 py-2 font-bold text-red-500 hover:opacity-60">
+                <button
+                  className="w-full cursor-pointer border-[1px] border-red-500 px-6 py-2 font-bold text-red-500 hover:opacity-60"
+                  onClick={handleAddToCart}
+                >
                   Add to cart
                 </button>
                 <button className="w-full cursor-pointer bg-red-500 px-6 py-2 font-bold text-white hover:bg-red-700">

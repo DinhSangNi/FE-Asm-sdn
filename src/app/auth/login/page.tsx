@@ -50,37 +50,30 @@ const LoginPage = () => {
       setLoading(true);
       if (!values) return;
       setLoading(true);
-      const res = await signIn('credentials', {
+      await signIn('credentials', {
         email: values.email,
         password: values.password,
         redirect: false,
       });
 
-      if (res?.error) {
-        toast.error('Error next auth', {
-          position: 'top-center',
-        });
-      } else {
-        const sessionRes = await fetch('/api/auth/session');
-        const session = await sessionRes.json();
+      const sessionRes = await fetch('/api/auth/session');
+      const session = await sessionRes.json();
 
-        // Set Redux
-        dispatch(
-          login({
-            userId: session.user.id,
-            name: session.user.name,
-            email: session.user.email,
-            avartar: session.user.avartar ?? '',
-          })
-        );
-        toast.success('Login successfully!', {
-          position: 'top-center',
-        });
-        router.push('/');
-      }
+      dispatch(
+        login({
+          userId: session.user.id,
+          name: session.user.name,
+          email: session.user.email,
+          avartar: session.user.avartar ?? '',
+        })
+      );
+      toast.success('Login successfully!', {
+        position: 'top-center',
+      });
+      router.push('/');
     } catch (error) {
       console.log('error: ', error);
-      toast.error('Register failed!', {
+      toast.error('Register failed! Invalid credentials.', {
         position: 'top-center',
       });
     } finally {
@@ -90,7 +83,7 @@ const LoginPage = () => {
 
   return (
     <>
-      <div className="flex min-h-[calc(100vh-64px)] w-full items-center justify-center bg-gray-200">
+      <div className="flex h-full w-full items-center justify-center bg-gray-100">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -125,7 +118,7 @@ const LoginPage = () => {
                 </FormItem>
               )}
             />
-            <Button disabled={loading} className="cursor-pointer">
+            <Button disabled={loading} className="cursor-pointer !text-white">
               Sing in {loading && <Spinner />}
             </Button>
 

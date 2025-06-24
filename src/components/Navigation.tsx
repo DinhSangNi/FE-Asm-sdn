@@ -8,19 +8,66 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { List } from 'lucide-react';
+import { List, ShoppingCart, ClipboardList } from 'lucide-react';
 import Link from 'next/link';
 import SearchBar from './SearchBar';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store/store';
 import { logout } from '@/store/userSlice';
+import { Badge } from 'antd';
+import { CartServices } from '@/lib/api/cart';
+import { fetchCart } from '@/store/cartSlice';
 
 const Navigation = () => {
   const router = useRouter();
+  const pathName = usePathname();
   const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.user);
+  const cart = useSelector((state: RootState) => state.cart);
+
+  useEffect(() => {
+    const fetchCartFromDB = async () => {
+      try {
+        if (pathName.startsWith('/auth')) {
+          return;
+        }
+        const res = await CartServices.getItemsInCart();
+        if (res.status === 200) {
+          const resolvedCart = res.data.metadata.items.map(
+            (item: {
+              productId: {
+                _id: string;
+                name: string;
+                price: number;
+                image: string[];
+              };
+              quantity: number;
+            }) => {
+              return {
+                id: item.productId._id,
+                name: item.productId.name,
+                price: item.productId.price,
+                image: item.productId.image[0],
+                quantity: item.quantity,
+              };
+            }
+          );
+
+          dispatch(fetchCart(resolvedCart));
+        }
+      } catch (error) {
+        console.log('error: ', error);
+      }
+    };
+
+    fetchCartFromDB();
+  }, [user]);
+
+  if (pathName.startsWith('/auth'))
+    return <div className="fixed -z-10 h-[64px] w-full bg-gray-200"></div>;
 
   const handleLogOut = async () => {
     await signOut({ redirect: false });
@@ -28,11 +75,9 @@ const Navigation = () => {
     router.push('/auth/login');
   };
 
-  const user = useSelector((state: RootState) => state.user);
-
   return (
     <>
-      <div className="fixed z-50 flex h-[64px] w-full justify-center bg-white py-4 opacity-90 shadow-md">
+      <div className="fixed z-50 flex h-[64px] w-full justify-center bg-white py-4 opacity-100 shadow-md">
         <div className="flex w-[90%] items-center gap-4 md:gap-6 lg:gap-12">
           <Link href="/" className="text-[1.2rem] font-bold">
             Assignment 1
@@ -43,19 +88,15 @@ const Navigation = () => {
             </Suspense>
           </div>
           <div>
-            <Link
-              href="/products"
-              className="flex cursor-pointer items-center gap-2 hover:opacity-60"
-            >
-              {user.userId && (
-                <>
-                  <List className="h-5 w-5" />
-                  <p className="hidden text-[0.8rem] font-bold md:block">
-                    Product Management
-                  </p>
-                </>
-              )}
-            </Link>
+            {user.userId && (
+              <div className="flex gap-4">
+                <Link href="/cart" className="cursor-pointer">
+                  <Badge count={cart.items.length}>
+                    <ShoppingCart className="h-5 w-5" />
+                  </Badge>
+                </Link>
+              </div>
+            )}
           </div>
           <div className="flex justify-end gap-2 text-[0.8rem] font-bold">
             {user.userId ? (
@@ -71,6 +112,34 @@ const Navigation = () => {
                       <p>{user.name}</p>
                       <p className="text-[0.8rem] font-normal">{user.email}</p>
                     </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link
+                      href="/products"
+                      className="flex cursor-pointer items-center gap-2"
+                    >
+                      <List className="h-5 w-5 text-black" />
+                      <p
+                        className="text-[0.8rem] font-bold md:block"
+                        style={{ margin: 0 }}
+                      >
+                        Product Management
+                      </p>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link
+                      href="/order"
+                      className="flex cursor-pointer items-center gap-2"
+                    >
+                      <ClipboardList className="h-5 w-5 text-black" />
+                      <p
+                        className="text-[0.8rem] font-bold md:block"
+                        style={{ margin: 0 }}
+                      >
+                        My orders
+                      </p>
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem

@@ -1,5 +1,5 @@
 import { AxiosInstance } from 'axios';
-import { axiosInstance } from '../config/axios';
+import { axiosInstance } from '../config/axiosInstance';
 
 export type ProductCreateDto = {
   name: string;
